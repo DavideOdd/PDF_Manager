@@ -1,0 +1,70 @@
+<UserControl x:Class="PdfManager.App.Views.PenToolbarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:PdfManager.App.ViewModels"
+             Width="64">
+    <UserControl.Resources>
+        <Style x:Key="SwatchButton" TargetType="Button">
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Margin" Value="4,2"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
+        </Style>
+    </UserControl.Resources>
+
+    <StackPanel Background="{DynamicResource Brush.Surface}"
+                VerticalAlignment="Top"
+                Margin="0,8">
+
+        <!-- Pen / Eraser toggle -->
+        <ToggleButton Style="{StaticResource BigToggleButton}"
+                      Width="52" Height="52" Margin="6,4"
+                      IsChecked="{Binding IsPenActive, Mode=OneWay}"
+                      ToolTip="Penna (P)"
+                      Click="PenButton_Click">✏️</ToggleButton>
+
+        <ToggleButton Style="{StaticResource BigToggleButton}"
+                      Width="52" Height="52" Margin="6,4"
+                      IsChecked="{Binding IsEraserActive, Mode=OneWay}"
+                      ToolTip="Gomma (E)"
+                      Click="EraserButton_Click">🧹</ToggleButton>
+
+        <Separator Margin="8,6"/>
+
+        <!-- Color swatches -->
+        <ItemsControl ItemsSource="{Binding Palette}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate><WrapPanel Width="56"/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Style="{StaticResource SwatchButton}"
+                            Tag="{Binding}"
+                            Click="Swatch_Click">
+                        <Button.Background>
+                            <SolidColorBrush Color="{Binding}"/>
+                        </Button.Background>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Separator Margin="8,6"/>
+
+        <!-- Thickness slider -->
+        <TextBlock Text="{DynamicResource Str_Thickness}"
+                   FontSize="11" HorizontalAlignment="Center"
+                   Foreground="{DynamicResource Brush.TextMuted}" Margin="0,0,0,4"/>
+        <Slider Minimum="1" Maximum="12"
+                Value="{Binding WidthPt}"
+                Orientation="Vertical"
+                Height="80"
+                HorizontalAlignment="Center"
+                TickFrequency="1" IsSnapToTickEnabled="True"/>
+        <TextBlock Text="{Binding WidthPt, StringFormat='{}{0:0}pt'}"
+                   FontSize="11" HorizontalAlignment="Center"
+                   Foreground="{DynamicResource Brush.TextMuted}" Margin="0,2,0,8"/>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,41 @@
+<UserControl x:Class="PdfManager.App.Controls.PdfPageView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid x:Name="PageGrid"
+          Width="{Binding DisplayWidthDip}"
+          Height="{Binding DisplayHeightDip}">
+
+        <!-- Rendered page bitmap -->
+        <Image x:Name="PageImage"
+               Source="{Binding RenderedImage}"
+               Stretch="Fill"
+               RenderOptions.BitmapScalingMode="HighQuality"
+               SnapsToDevicePixels="True"
+               Width="{Binding DisplayWidthDip}"
+               Height="{Binding DisplayHeightDip}"/>
+
+        <!-- Loading overlay -->
+        <Rectangle Fill="#FFFFFFFF" Opacity="0.7"
+                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
+        <TextBlock Text="Caricamento…" FontSize="16"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"/>
+
+        <!-- Ink overlay -->
+        <InkCanvas x:Name="Ink"
+                   Background="Transparent"
+                   Strokes="{Binding Strokes}"
+                   Width="{Binding DisplayWidthDip}"
+                   Height="{Binding DisplayHeightDip}"
+                   Stylus.IsPressAndHoldEnabled="False"
+                   Stylus.IsTapFeedbackEnabled="False"
+                   Stylus.IsTouchFeedbackEnabled="False"/>
+
+        <!-- Text notes canvas: shows saved FreeTextNotes + active input TextBox -->
+        <Canvas x:Name="TextCanvas"
+                Width="{Binding DisplayWidthDip}"
+                Height="{Binding DisplayHeightDip}"
+                Background="Transparent"
+                MouseLeftButtonDown="TextCanvas_MouseDown"/>
+    </Grid>
+</UserControl>

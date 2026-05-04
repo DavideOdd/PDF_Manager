@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet --list-sdks)",
+      "Bash(dotnet --list-runtimes)",
+      "Bash(where iscc *)",
+      "Bash(where ISCC.exe)",
+      "Read(//c/Program Files \\(x86\\)/Inno Setup 6/**)",
+      "Bash(dotnet new *)",
+      "Bash(dotnet sln *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet build *)",
+      "Bash(xargs grep *)",
+      "Bash(dotnet test *)",
+      "Bash(dotnet publish *)",
+      "PowerShell(cd \"C:\\\\Users\\\\Odd Alien AMD 1\\\\Desktop\\\\AAA_Reserch\\\\PDF_Manager\"; powershell -ExecutionPolicy Bypass -File \"build\\\\make-icon.ps1\" 2>&1)",
+      "PowerShell(cd \"C:\\\\Users\\\\Odd Alien AMD 1\\\\Desktop\\\\AAA_Reserch\\\\PDF_Manager\"; powershell -ExecutionPolicy Bypass -File \"build\\\\make-icon.ps1\" 2>&1 | Select-String -Pattern \"Icona|error|Error\" -CaseSensitive:$false)",
+      "Bash(dotnet run *)"
+    ]
+  }
+}

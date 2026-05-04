@@ -1,0 +1,74 @@
+<Window x:Class="PdfManager.App.Views.Dialogs.CombineDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dd="urn:gong-wpf-dragdrop"
+        xmlns:vm="clr-namespace:PdfManager.App.ViewModels"
+        xmlns:models="clr-namespace:PdfManager.Core.Models;assembly=PdfManager.Core"
+        Title="{DynamicResource Str_DialogCombineTitle}"
+        Width="640" Height="520"
+        WindowStartupLocation="CenterOwner"
+        AllowDrop="True" Drop="Window_Drop">
+    <Window.DataContext>
+        <vm:CombineDialogViewModel/>
+    </Window.DataContext>
+    <DockPanel Margin="16">
+        <!-- Toolbar -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="{DynamicResource Str_AddFiles}"
+                    Style="{StaticResource BigButton}"
+                    Click="AddFiles_Click"/>
+            <Button Content="{DynamicResource Str_RemoveFile}"
+                    Style="{StaticResource BigButton}"
+                    Command="{Binding RemoveCommand}"/>
+            <Button Content="{DynamicResource Str_MoveUp}"
+                    Style="{StaticResource BigButton}"
+                    Command="{Binding MoveUpCommand}"/>
+            <Button Content="{DynamicResource Str_MoveDown}"
+                    Style="{StaticResource BigButton}"
+                    Command="{Binding MoveDownCommand}"/>
+            <Button Content="Ruota 90°"
+                    Style="{StaticResource BigButton}"
+                    Command="{Binding RotateItemCommand}"/>
+        </StackPanel>
+
+        <!-- Action buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="{DynamicResource Str_DialogCancel}"
+                    Style="{StaticResource BigButton}"
+                    IsCancel="True"/>
+            <Button Content="{DynamicResource Str_GenerateOutput}"
+                    Style="{StaticResource BigButton}"
+                    Click="Generate_Click"
+                    IsEnabled="{Binding CanGenerate}"
+                    IsDefault="True"/>
+        </StackPanel>
+
+        <!-- File list -->
+        <ListBox ItemsSource="{Binding Items}"
+                 SelectedItem="{Binding SelectedItem}"
+                 dd:DragDrop.IsDragSource="True"
+                 dd:DragDrop.IsDropTarget="True"
+                 HorizontalContentAlignment="Stretch"
+                 BorderBrush="{DynamicResource Brush.Border}"
+                 BorderThickness="1">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:CombineItem}">
+                    <Grid Margin="4,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="📄 " FontSize="18" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding DisplayName}"
+                                   FontSize="14" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Grid.Column="2" Text="{Binding RotationDeg, StringFormat='{}{0}°'}"
+                                   FontSize="13" Foreground="{DynamicResource Brush.TextMuted}"
+                                   VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</Window>

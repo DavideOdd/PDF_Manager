@@ -1,0 +1,183 @@
+<Window x:Class="PdfManager.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:PdfManager.App.ViewModels"
+        xmlns:views="clr-namespace:PdfManager.App.Views"
+        Title="{DynamicResource Str_AppTitle}"
+        Height="860" Width="1280"
+        MinWidth="800" MinHeight="500"
+        TextOptions.TextFormattingMode="Display"
+        AllowDrop="True"
+        Drop="Window_Drop"
+        DragOver="Window_DragOver"
+        Stylus.IsPressAndHoldEnabled="False">
+
+
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Ctrl"       Command="{Binding OpenCommand}"/>
+        <KeyBinding Key="S" Modifiers="Ctrl"       Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="S" Modifiers="Ctrl+Shift" Command="{Binding SaveAsCommand}"/>
+        <KeyBinding Key="W" Modifiers="Ctrl"       Command="{Binding CloseTabCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Ctrl"       Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Y" Modifiers="Ctrl"       Command="{Binding RedoCommand}"/>
+        <KeyBinding Key="Delete"                   Command="{Binding DeletePageCommand}"/>
+        <KeyBinding Key="R"                        Command="{Binding RotateRightCommand}"/>
+        <KeyBinding Key="P"                        Command="{Binding TogglePenCommand}"/>
+        <KeyBinding Key="E"                        Command="{Binding ToggleEraserCommand}"/>
+        <KeyBinding Key="Escape"                   Command="{Binding DeactivateToolCommand}"/>
+        <KeyBinding Key="H"                        Command="{Binding TogglePanCommand}"/>
+        <KeyBinding Key="OemPlus"  Modifiers="Ctrl" Command="{Binding ZoomInCommand}"/>
+        <KeyBinding Key="OemMinus" Modifiers="Ctrl" Command="{Binding ZoomOutCommand}"/>
+        <KeyBinding Key="D0"       Modifiers="Ctrl" Command="{Binding ZoomResetCommand}"/>
+    </Window.InputBindings>
+
+    <DockPanel>
+        <!-- Main Toolbar -->
+        <Border DockPanel.Dock="Top"
+                Background="{DynamicResource Brush.Surface}"
+                BorderBrush="{DynamicResource Brush.Border}"
+                BorderThickness="0,0,0,1">
+            <ToolBar Height="56" Background="Transparent" Band="0">
+                <Button Content="{DynamicResource Str_Open}"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding OpenCommand}"
+                        ToolTip="Apri PDF (Ctrl+O)"/>
+                <Button Content="{DynamicResource Str_Save}"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding SaveCommand}"
+                        ToolTip="Salva (Ctrl+S)"/>
+                <Button Content="{DynamicResource Str_SaveAs}"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding SaveAsCommand}"
+                        ToolTip="Salva con nome (Ctrl+Shift+S)"/>
+                <Separator/>
+                <Button Content="{DynamicResource Str_Combine}"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding OpenCombineCommand}"/>
+                <Separator/>
+                <ToggleButton Content="{DynamicResource Str_Pen}"
+                              Style="{StaticResource BigToggleButton}"
+                              IsChecked="{Binding IsPenMode}"
+                              ToolTip="Penna (P)"/>
+                <ToggleButton Content="{DynamicResource Str_Text}"
+                              Style="{StaticResource BigToggleButton}"
+                              IsChecked="{Binding IsTextMode}"
+                              ToolTip="Testo (T)"/>
+                <ToggleButton Content="{DynamicResource Str_Eraser}"
+                              Style="{StaticResource BigToggleButton}"
+                              IsChecked="{Binding IsEraserMode}"
+                              ToolTip="Gomma (E)"/>
+                <ToggleButton Content="✋" FontSize="20"
+                              Style="{StaticResource BigToggleButton}"
+                              IsChecked="{Binding IsPanMode}"
+                              ToolTip="Mano — trascina per scorrere (H)"/>
+                <Separator/>
+                <Button Content="↺" FontSize="20"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding RotateLeftCommand}"
+                        ToolTip="{DynamicResource Str_RotateLeft}"/>
+                <Button Content="↻" FontSize="20"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding RotateRightCommand}"
+                        ToolTip="{DynamicResource Str_RotateRight}"/>
+                <Button Content="🗑" FontSize="20"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding DeletePageCommand}"
+                        ToolTip="{DynamicResource Str_DeletePage}"/>
+                <Separator/>
+                <Button Content="↩" FontSize="20"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding UndoCommand}"
+                        ToolTip="Annulla (Ctrl+Z)"/>
+                <Button Content="↪" FontSize="20"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding RedoCommand}"
+                        ToolTip="Ripeti (Ctrl+Y)"/>
+                <Separator/>
+                <Button Content="−" FontSize="20" Width="44"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding ZoomOutCommand}"
+                        ToolTip="Zoom indietro (Ctrl+-)"/>
+                <Button Content="{Binding ZoomLabel}" FontSize="13"
+                        MinWidth="56" Height="44"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding ZoomResetCommand}"
+                        ToolTip="Ripristina zoom 100% (Ctrl+0)"/>
+                <Button Content="+" FontSize="20" Width="44"
+                        Style="{StaticResource BigButton}"
+                        Command="{Binding ZoomInCommand}"
+                        ToolTip="Zoom avanti (Ctrl++)"/>
+            </ToolBar>
+        </Border>
+
+        <!-- Tab control -->
+        <TabControl ItemsSource="{Binding OpenTabs}"
+                    SelectedItem="{Binding ActiveTab}"
+                    Background="{DynamicResource Brush.Background}">
+
+            <!-- Tab header: filename + close button -->
+            <TabControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:PdfTabViewModel}">
+                    <StackPanel Orientation="Horizontal" Margin="0">
+                        <TextBlock Text="{Binding Title}"
+                                   VerticalAlignment="Center"
+                                   MaxWidth="180"
+                                   TextTrimming="CharacterEllipsis"
+                                   FontSize="13"
+                                   Margin="6,0,4,0"/>
+                        <Button Content="✕"
+                                Width="22" Height="22" FontSize="11"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                VerticalAlignment="Center"
+                                ToolTip="Chiudi (Ctrl+W)"
+                                CommandParameter="{Binding}"
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=TabControl},
+                                                  Path=DataContext.CloseTabCommand}"
+                                Stylus.IsPressAndHoldEnabled="False"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+
+            <!-- Tab content: PdfTabView with PenTool in Tag -->
+            <TabControl.ContentTemplate>
+                <DataTemplate DataType="{x:Type vm:PdfTabViewModel}">
+                    <views:PdfTabView Tag="{Binding RelativeSource={RelativeSource AncestorType=TabControl},
+                                                    Path=DataContext.PenTool}"/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+
+            <!-- Empty state overlay -->
+            <TabControl.Style>
+                <Style TargetType="TabControl">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding OpenTabs.Count}" Value="0">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TabControl">
+                                        <Border Background="{DynamicResource Brush.Background}">
+                                            <StackPanel HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center">
+                                                <TextBlock Text="📄" FontSize="64"
+                                                           HorizontalAlignment="Center"/>
+                                                <TextBlock Text="{DynamicResource Str_DropHint}"
+                                                           FontSize="18"
+                                                           Foreground="{DynamicResource Brush.TextMuted}"
+                                                           HorizontalAlignment="Center"
+                                                           TextAlignment="Center"
+                                                           TextWrapping="Wrap"
+                                                           MaxWidth="400"
+                                                           Margin="0,16,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TabControl.Style>
+        </TabControl>
+    </DockPanel>
+</Window>

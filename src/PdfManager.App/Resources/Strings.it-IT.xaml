@@ -1,0 +1,49 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="Str_AppTitle">Gestore PDF</sys:String>
+
+    <sys:String x:Key="Str_Open">Apri</sys:String>
+    <sys:String x:Key="Str_Save">Salva</sys:String>
+    <sys:String x:Key="Str_SaveAs">Salva con nome</sys:String>
+    <sys:String x:Key="Str_Close">Chiudi</sys:String>
+    <sys:String x:Key="Str_Combine">Combina</sys:String>
+    <sys:String x:Key="Str_Export">Esporta</sys:String>
+    <sys:String x:Key="Str_Pen">Penna</sys:String>
+    <sys:String x:Key="Str_Text">Testo</sys:String>
+    <sys:String x:Key="Str_Eraser">Gomma</sys:String>
+    <sys:String x:Key="Str_Undo">Annulla</sys:String>
+    <sys:String x:Key="Str_Redo">Ripeti</sys:String>
+
+    <sys:String x:Key="Str_RotateLeft">Ruota a sinistra</sys:String>
+    <sys:String x:Key="Str_RotateRight">Ruota a destra</sys:String>
+    <sys:String x:Key="Str_DeletePage">Elimina pagina</sys:String>
+    <sys:String x:Key="Str_AddPage">Aggiungi pagina</sys:String>
+
+    <sys:String x:Key="Str_FilterPdf">File PDF (*.pdf)|*.pdf</sys:String>
+    <sys:String x:Key="Str_FilterPdfImg">File supportati (*.pdf;*.jpg;*.jpeg;*.png)|*.pdf;*.jpg;*.jpeg;*.png|PDF (*.pdf)|*.pdf|Immagini (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png</sys:String>
+
+    <sys:String x:Key="Str_Color">Colore</sys:String>
+    <sys:String x:Key="Str_Thickness">Spessore</sys:String>
+
+    <sys:String x:Key="Str_DialogPasswordTitle">PDF protetto da password</sys:String>
+    <sys:String x:Key="Str_DialogPasswordPrompt">Inserisci la password per aprire il documento:</sys:String>
+    <sys:String x:Key="Str_DialogOk">OK</sys:String>
+    <sys:String x:Key="Str_DialogCancel">Annulla</sys:String>
+
+    <sys:String x:Key="Str_DialogCombineTitle">Combina file in un unico PDF</sys:String>
+    <sys:String x:Key="Str_AddFiles">Aggiungi file</sys:String>
+    <sys:String x:Key="Str_RemoveFile">Rimuovi</sys:String>
+    <sys:String x:Key="Str_MoveUp">Sposta su</sys:String>
+    <sys:String x:Key="Str_MoveDown">Sposta giù</sys:String>
+    <sys:String x:Key="Str_GenerateOutput">Genera PDF</sys:String>
+
+    <sys:String x:Key="Str_PromptUnsavedTitle">Modifiche non salvate</sys:String>
+    <sys:String x:Key="Str_PromptUnsavedBody">Vuoi salvare le modifiche prima di chiudere?</sys:String>
+
+    <sys:String x:Key="Str_Error">Errore</sys:String>
+    <sys:String x:Key="Str_NoDocumentOpen">Nessun documento aperto.</sys:String>
+    <sys:String x:Key="Str_DropHint">Trascina qui PDF o immagini per aprirli o combinarli.</sys:String>
+
+</ResourceDictionary>
