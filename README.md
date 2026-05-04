@@ -145,3 +145,4 @@ MIT — vedi [LICENSE](LICENSE)
 ## Autore
 
 **Davide Silvestri**
+"# PDF_Manager" 
