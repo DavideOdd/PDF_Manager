@@ -2,7 +2,7 @@
 ; Build:  ISCC.exe build\installer.iss  (from repo root)
 ; Output: artifacts\installer\GestorePDF-Setup-1.0.0.exe
 
-#define AppVersion "1.1.0"
+#define AppVersion "1.1.1"
 #define AppName "Gestore PDF"
 #define AppExe "GestorePDF.exe"
 

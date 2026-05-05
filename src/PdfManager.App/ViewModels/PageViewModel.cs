@@ -2,6 +2,7 @@ using System.Windows.Ink;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using PdfManager.Core.Models;
+using PdfManager.Core.Services;
 
 namespace PdfManager.App.ViewModels;
 
@@ -23,7 +24,8 @@ public sealed partial class PageViewModel : ObservableObject
 
     public StrokeCollection Strokes { get; } = new();
 
-    public List<FreeTextNote> Notes { get; } = new();
+    public List<FreeTextNote> Notes  { get; } = new();
+    public List<ShapeAnnotation> Shapes { get; } = new();
 
     public string Label => $"Pagina {PageIndex + 1}";
 

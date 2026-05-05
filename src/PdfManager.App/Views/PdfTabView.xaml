@@ -47,7 +47,7 @@
                     <DataTemplate DataType="{x:Type vm:PageViewModel}">
                         <Border Margin="6,4" Padding="4"
                                 BorderBrush="{DynamicResource Brush.Border}"
-                                BorderThickness="1" Background="White"
+                                BorderThickness="1" Background="{DynamicResource Brush.Surface}"
                                 CornerRadius="4">
                             <StackPanel>
                                 <Image Source="{Binding ThumbnailImage}"
@@ -68,7 +68,7 @@
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#FFE0EAFF"/>
+                                <Setter Property="Background" Value="{DynamicResource Brush.AccentLight}"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -87,16 +87,16 @@
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto"
                       PanningMode="Both"
-                      Background="#FFE8ECF0">
+                      Background="{DynamicResource Brush.PageCanvas}">
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
                 <Grid.LayoutTransform>
                     <ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}"/>
                 </Grid.LayoutTransform>
                 <ctrl:PdfPageView DataContext="{Binding CurrentPage}"
-                                  PenTool="{Binding RelativeSource={RelativeSource AncestorType=UserControl},
-                                                    Path=Tag}"
-                                  IsTextMode="{Binding RelativeSource={RelativeSource AncestorType=TabControl},
-                                                       Path=DataContext.IsTextMode}"/>
+                                  PenTool="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=Tag}"
+                                  IsTextMode="{Binding RelativeSource={RelativeSource AncestorType=TabControl}, Path=DataContext.IsTextMode}"
+                                  IsArrowMode="{Binding RelativeSource={RelativeSource AncestorType=TabControl}, Path=DataContext.IsArrowMode}"
+                                  IsCircleMode="{Binding RelativeSource={RelativeSource AncestorType=TabControl}, Path=DataContext.IsCircleMode}"/>
             </Grid>
         </ScrollViewer>
 

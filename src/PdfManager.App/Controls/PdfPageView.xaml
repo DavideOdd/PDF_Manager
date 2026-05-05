@@ -31,11 +31,21 @@
                    Stylus.IsTapFeedbackEnabled="False"
                    Stylus.IsTouchFeedbackEnabled="False"/>
 
-        <!-- Text notes canvas: shows saved FreeTextNotes + active input TextBox -->
+        <!-- Text notes canvas -->
         <Canvas x:Name="TextCanvas"
                 Width="{Binding DisplayWidthDip}"
                 Height="{Binding DisplayHeightDip}"
                 Background="Transparent"
                 MouseLeftButtonDown="TextCanvas_MouseDown"/>
+
+        <!-- Shape drawing canvas (arrows, circles) -->
+        <Canvas x:Name="ShapeCanvas"
+                Width="{Binding DisplayWidthDip}"
+                Height="{Binding DisplayHeightDip}"
+                Background="Transparent"
+                MouseLeftButtonDown="ShapeCanvas_MouseDown"
+                MouseMove="ShapeCanvas_MouseMove"
+                MouseLeftButtonUp="ShapeCanvas_MouseUp"
+                Stylus.IsPressAndHoldEnabled="False"/>
     </Grid>
 </UserControl>

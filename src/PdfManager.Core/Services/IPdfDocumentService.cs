@@ -11,6 +11,7 @@ public interface IPdfDocumentService
     void Split(string srcPath, IReadOnlyList<int> pageIndexes, string outPath, string? password = null);
     void Combine(IReadOnlyList<CombineItem> items, string outPath);
     string ImageToTempPdf(string imagePath);
+    void CreateBlankDocument(string outPath, double widthPt, double heightPt);
     void SaveWithAnnotations(
         string srcPath,
         string outPath,

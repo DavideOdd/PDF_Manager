@@ -12,24 +12,16 @@
         AllowDrop="True"
         Drop="Window_Drop"
         DragOver="Window_DragOver"
-        Stylus.IsPressAndHoldEnabled="False">
+        Stylus.IsPressAndHoldEnabled="False"
+        Closing="Window_Closing">
 
     <Window.InputBindings>
-        <KeyBinding Key="O"        Modifiers="Ctrl"       Command="{Binding OpenCommand}"/>
-        <KeyBinding Key="S"        Modifiers="Ctrl"       Command="{Binding SaveCommand}"/>
-        <KeyBinding Key="S"        Modifiers="Ctrl+Shift" Command="{Binding SaveAsCommand}"/>
-        <KeyBinding Key="W"        Modifiers="Ctrl"       Command="{Binding CloseTabCommand}"/>
-        <KeyBinding Key="Z"        Modifiers="Ctrl"       Command="{Binding UndoCommand}"/>
-        <KeyBinding Key="Y"        Modifiers="Ctrl"       Command="{Binding RedoCommand}"/>
-        <KeyBinding Key="Delete"                          Command="{Binding DeletePageCommand}"/>
-        <KeyBinding Key="R"                               Command="{Binding RotateRightCommand}"/>
-        <KeyBinding Key="P"                               Command="{Binding TogglePenCommand}"/>
-        <KeyBinding Key="E"                               Command="{Binding ToggleEraserCommand}"/>
-        <KeyBinding Key="H"                               Command="{Binding TogglePanCommand}"/>
-        <KeyBinding Key="Escape"                          Command="{Binding DeactivateToolCommand}"/>
-        <KeyBinding Key="OemPlus"  Modifiers="Ctrl"       Command="{Binding ZoomInCommand}"/>
-        <KeyBinding Key="OemMinus" Modifiers="Ctrl"       Command="{Binding ZoomOutCommand}"/>
-        <KeyBinding Key="D0"       Modifiers="Ctrl"       Command="{Binding ZoomResetCommand}"/>
+        <KeyBinding Key="Z"        Modifiers="Ctrl"  Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Y"        Modifiers="Ctrl"  Command="{Binding RedoCommand}"/>
+        <KeyBinding Key="OemPlus"  Modifiers="Ctrl"  Command="{Binding ZoomInCommand}"/>
+        <KeyBinding Key="OemMinus" Modifiers="Ctrl"  Command="{Binding ZoomOutCommand}"/>
+        <KeyBinding Key="D0"       Modifiers="Ctrl"  Command="{Binding ZoomResetCommand}"/>
+        <KeyBinding Key="Escape"                     Command="{Binding DeactivateToolCommand}"/>
     </Window.InputBindings>
 
     <DockPanel>
@@ -41,14 +33,56 @@
             <ToolBar Style="{StaticResource FlatToolBar}">
 
                 <!-- File -->
-                <Button Content="Apri"   Style="{StaticResource BigButton}" Command="{Binding OpenCommand}"    ToolTip="Apri (Ctrl+O)"/>
-                <Button Content="Salva"  Style="{StaticResource BigButton}" Command="{Binding SaveCommand}"   ToolTip="Salva (Ctrl+S)"/>
-                <Button Content="Salva…" Style="{StaticResource BigButton}" Command="{Binding SaveAsCommand}" ToolTip="Salva con nome (Ctrl+Shift+S)"/>
-                <Separator/>
+                <!-- File menu -->
+                <Button x:Name="FileMenuBtn" Content="File  ▾"
+                        Style="{StaticResource BigButton}"
+                        Click="FileMenuBtn_Click"/>
+                <Popup x:Name="FileMenu" PlacementTarget="{Binding ElementName=FileMenuBtn}"
+                       Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                    <Border Background="{DynamicResource Brush.Surface}"
+                            BorderBrush="{DynamicResource Brush.Border}"
+                            BorderThickness="1" CornerRadius="6" Padding="4">
+                        <StackPanel MinWidth="180">
+                            <Button Content="Nuovo documento…" Style="{StaticResource BigButton}"
+                                    HorizontalContentAlignment="Left" Padding="12,7"
+                                    Command="{Binding NewDocumentCommand}" Click="FileMenuItem_Click"/>
+                            <Button Content="Apri…" Style="{StaticResource BigButton}"
+                                    HorizontalContentAlignment="Left" Padding="12,7"
+                                    Command="{Binding OpenCommand}" Click="FileMenuItem_Click"/>
+                            <Separator Margin="8,2"/>
+                            <Button Content="Salva" Style="{StaticResource BigButton}"
+                                    HorizontalContentAlignment="Left" Padding="12,7"
+                                    Command="{Binding SaveCommand}" Click="FileMenuItem_Click"/>
+                            <Button Content="Salva con nome…" Style="{StaticResource BigButton}"
+                                    HorizontalContentAlignment="Left" Padding="12,7"
+                                    Command="{Binding SaveAsCommand}" Click="FileMenuItem_Click"/>
+                            <Separator Margin="8,2"/>
+                            <Button Content="Chiudi scheda" Style="{StaticResource BigButton}"
+                                    HorizontalContentAlignment="Left" Padding="12,7"
+                                    Command="{Binding CloseTabCommand}" Click="FileMenuItem_Click"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
 
-                <!-- Page ops -->
-                <Button Content="Combina"  Style="{StaticResource BigButton}" Command="{Binding OpenCombineCommand}"/>
-                <Button Content="Dividi"   Style="{StaticResource BigButton}" Command="{Binding OpenSplitCommand}"/>
+                <!-- Organizza menu -->
+                <Button x:Name="OrgMenuBtn" Content="Organizza  ▾"
+                        Style="{StaticResource BigButton}"
+                        Click="OrgMenuBtn_Click"/>
+                <Popup x:Name="OrgMenu" PlacementTarget="{Binding ElementName=OrgMenuBtn}"
+                       Placement="Bottom" StaysOpen="False" AllowsTransparency="True">
+                    <Border Background="{DynamicResource Brush.Surface}"
+                            BorderBrush="{DynamicResource Brush.Border}"
+                            BorderThickness="1" CornerRadius="6" Padding="4">
+                        <StackPanel MinWidth="160">
+                            <Button Content="Combina file…" Style="{StaticResource BigButton}"
+                                    HorizontalContentAlignment="Left" Padding="12,7"
+                                    Command="{Binding OpenCombineCommand}" Click="OrgMenuItem_Click"/>
+                            <Button Content="Dividi PDF…" Style="{StaticResource BigButton}"
+                                    HorizontalContentAlignment="Left" Padding="12,7"
+                                    Command="{Binding OpenSplitCommand}" Click="OrgMenuItem_Click"/>
+                        </StackPanel>
+                    </Border>
+                </Popup>
                 <Separator/>
 
                 <!-- Tools — mutually exclusive -->
@@ -62,9 +96,12 @@
                         Click="PenOptionsBtn_Click"
                         ToolTip="Opzioni penna"/>
 
-                <ToggleButton Content="Testo"  Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsTextMode}"   ToolTip="Testo"/>
-                <ToggleButton Content="Gomma"  Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsEraserMode}" ToolTip="Gomma (E)"/>
-                <ToggleButton Content="✋"     Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsPanMode}"    ToolTip="Pan (H)" FontSize="14"/>
+                <ToggleButton Content="Testo"   Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsTextMode}"   ToolTip="Testo"/>
+                <ToggleButton Content="Freccia" Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsArrowMode}"  ToolTip="Freccia"/>
+                <ToggleButton Content="Cerchio" Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsCircleMode}" ToolTip="Cerchio/Ellisse"/>
+                <ToggleButton Content="Gomma"   Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsEraserMode}" ToolTip="Gomma"/>
+                <ToggleButton Content="✋"      Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsPanMode}"    ToolTip="Pan" FontSize="14"/>
+                <ToggleButton Content="Testo PDF" Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsOcrEditMode}" ToolTip="Modifica testo esistente (OCR)"/>
                 <Separator/>
 
                 <!-- Page ops -->
@@ -88,7 +125,7 @@
 
                 <!-- Dark mode toggle -->
                 <ToggleButton Style="{StaticResource BigToggleButton}"
-                              IsChecked="{Binding IsDarkMode}"
+                              IsChecked="{Binding IsDarkMode, Mode=OneWay}"
                               Command="{Binding ToggleThemeCommand}"
                               ToolTip="Tema chiaro/scuro"
                               FontSize="15">

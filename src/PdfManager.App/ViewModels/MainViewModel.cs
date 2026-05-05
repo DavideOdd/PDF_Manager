@@ -59,15 +59,29 @@ public sealed partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(IsTextMode));
         OnPropertyChanged(nameof(IsEraserMode));
         OnPropertyChanged(nameof(IsPanMode));
+        OnPropertyChanged(nameof(IsArrowMode));
+        OnPropertyChanged(nameof(IsCircleMode));
+        OnPropertyChanged(nameof(IsOcrEditMode));
     }
 
-    [ObservableProperty]
-    private bool _isPanMode;
+    [ObservableProperty] private bool _isPanMode;
+    [ObservableProperty] private bool _isArrowMode;
+    [ObservableProperty] private bool _isCircleMode;
+    [ObservableProperty] private bool _isOcrEditMode;
 
-    partial void OnIsPanModeChanged(bool value)
+    partial void OnIsPanModeChanged(bool v)    { if (v) DeactivateExcept(nameof(IsPanMode));    NotifyAllTools(); }
+    partial void OnIsArrowModeChanged(bool v)  { if (v) DeactivateExcept(nameof(IsArrowMode));  NotifyAllTools(); }
+    partial void OnIsCircleModeChanged(bool v) { if (v) DeactivateExcept(nameof(IsCircleMode)); NotifyAllTools(); }
+    partial void OnIsOcrEditModeChanged(bool v){ if (v) DeactivateExcept(nameof(IsOcrEditMode));NotifyAllTools(); }
+
+    private void DeactivateExcept(string keep)
     {
-        if (value) { PenTool.Deactivate(); _isTextMode = false; }
-        NotifyAllTools();
+        PenTool.Deactivate();
+        if (keep != nameof(IsPanMode))    _isPanMode    = false;
+        if (keep != nameof(IsArrowMode))  _isArrowMode  = false;
+        if (keep != nameof(IsCircleMode)) _isCircleMode = false;
+        if (keep != nameof(IsOcrEditMode))_isOcrEditMode= false;
+        _isTextMode = keep == "Text";
     }
 
     public MainViewModel(IPdfRenderer renderer, IPdfDocumentService docService)
@@ -178,6 +192,21 @@ public sealed partial class MainViewModel : ObservableObject
         }
         OpenTabs.Remove(tab);
         ActiveTab = OpenTabs.LastOrDefault();
+    }
+
+    [RelayCommand]
+    private async Task NewDocumentAsync()
+    {
+        var dlg = new Views.Dialogs.NewDocumentDialog();
+        if (dlg.ShowDialog() != true) return;
+        var tmp = Path.Combine(Path.GetTempPath(), $"GestorePDF_new_{Guid.NewGuid():N}.pdf");
+        await Task.Run(() => _docService.CreateBlankDocument(tmp, dlg.PageWidthPt, dlg.PageHeightPt));
+        await OpenFileAsync(tmp);
+        if (ActiveTab != null)
+        {
+            ActiveTab.Title = "Nuovo documento";
+            ActiveTab.FilePath = string.Empty; // force SaveAs on first save
+        }
     }
 
     [RelayCommand]

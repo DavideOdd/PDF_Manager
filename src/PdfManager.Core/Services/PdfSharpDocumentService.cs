@@ -98,6 +98,18 @@ public sealed class PdfSharpDocumentService : IPdfDocumentService
         }
     }
 
+    public void CreateBlankDocument(string outPath, double widthPt, double heightPt)
+    {
+        PdfSharpInit.EnsureRegistered();
+        using var doc  = new PdfDocument();
+        var page = doc.AddPage();
+        page.Width  = XUnit.FromPoint(widthPt);
+        page.Height = XUnit.FromPoint(heightPt);
+        using var gfx = XGraphics.FromPdfPage(page);
+        gfx.DrawRectangle(XBrushes.White, 0, 0, widthPt, heightPt);
+        doc.Save(outPath);
+    }
+
     public string ImageToTempPdf(string imagePath)
     {
         var tmp = Path.Combine(Path.GetTempPath(), $"GestorePDF_{Guid.NewGuid():N}.pdf");
