@@ -44,8 +44,8 @@ App Windows per visualizzare, annotare e modificare PDF e immagini. Interfaccia 
 
 ## Installazione rapida
 
-1. Vai alla sezione [**Releases**](../../releases) di questo repository
-2. Scarica `GestorePDF-Setup-x.x.x.exe`
+1. Vai alla sezione [**Releases**](https://github.com/DavideOdd/PDF_Manager/releases) di questo repository
+2. Scarica `GestorePDF-Setup-1.1.0.exe` dall'ultima release
 3. Doppio click → installa senza privilegi di amministratore
 4. Avvia **Gestore PDF** dall'icona sul desktop
 
