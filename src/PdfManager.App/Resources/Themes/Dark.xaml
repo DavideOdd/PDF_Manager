@@ -1,0 +1,20 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="Brush.Window"       Color="#121212"/>
+    <SolidColorBrush x:Key="Brush.Background"   Color="#1E1E1E"/>
+    <SolidColorBrush x:Key="Brush.Surface"      Color="#2D2D2D"/>
+    <SolidColorBrush x:Key="Brush.Surface2"     Color="#383838"/>
+    <SolidColorBrush x:Key="Brush.Border"       Color="#404040"/>
+    <SolidColorBrush x:Key="Brush.Text"         Color="#F0F0F0"/>
+    <SolidColorBrush x:Key="Brush.TextMuted"    Color="#9E9E9E"/>
+    <SolidColorBrush x:Key="Brush.TextDisabled" Color="#616161"/>
+    <SolidColorBrush x:Key="Brush.Accent"       Color="#7986CB"/>
+    <SolidColorBrush x:Key="Brush.AccentHover"  Color="#9FA8DA"/>
+    <SolidColorBrush x:Key="Brush.AccentLight"  Color="#283593"/>
+    <SolidColorBrush x:Key="Brush.Danger"       Color="#EF5350"/>
+    <SolidColorBrush x:Key="Brush.PageCanvas"   Color="#2A2A2A"/>
+    <SolidColorBrush x:Key="Brush.Toolbar"      Color="#242424"/>
+    <SolidColorBrush x:Key="Brush.ToolbarBorder" Color="#333333"/>
+    <SolidColorBrush x:Key="Brush.ScrollBar"    Color="#555555"/>
+    <Color x:Key="Color.Accent">#FF7986CB</Color>
+</ResourceDictionary>

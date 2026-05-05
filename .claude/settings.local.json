@@ -15,7 +15,8 @@
       "Bash(dotnet publish *)",
       "PowerShell(cd \"C:\\\\Users\\\\Odd Alien AMD 1\\\\Desktop\\\\AAA_Reserch\\\\PDF_Manager\"; powershell -ExecutionPolicy Bypass -File \"build\\\\make-icon.ps1\" 2>&1)",
       "PowerShell(cd \"C:\\\\Users\\\\Odd Alien AMD 1\\\\Desktop\\\\AAA_Reserch\\\\PDF_Manager\"; powershell -ExecutionPolicy Bypass -File \"build\\\\make-icon.ps1\" 2>&1 | Select-String -Pattern \"Icona|error|Error\" -CaseSensitive:$false)",
-      "Bash(dotnet run *)"
+      "Bash(dotnet run *)",
+      "Bash(git add *)"
     ]
   }
 }

@@ -11,7 +11,6 @@
             <ColumnDefinition Width="180" MinWidth="120" MaxWidth="280"/>
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <!-- Thumbnail sidebar -->
@@ -101,9 +100,5 @@
             </Grid>
         </ScrollViewer>
 
-        <!-- Pen toolbar (right rail) -->
-        <views:PenToolbarView Grid.Column="3"
-                              DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl},
-                                                   Path=Tag}"/>
     </Grid>
 </UserControl>

@@ -33,8 +33,33 @@ public partial class PdfPageView : UserControl
     public PdfPageView()
     {
         InitializeComponent();
-        Ink.StrokeCollected += (_, _) => MarkDirty();
-        Ink.StrokeErased    += (_, _) => MarkDirty();
+        Ink.StrokeCollected += OnStrokeCollected;
+        Ink.StrokeErased    += OnStrokeErased;
+    }
+
+    private void OnStrokeCollected(object? sender, InkCanvasStrokeCollectedEventArgs e)
+    {
+        var tab = GetTab();
+        if (tab == null) { MarkDirty(); return; }
+        var stroke = e.Stroke;
+        tab.PushUndo(() =>
+        {
+            Ink.Strokes.Remove(stroke);
+            MarkDirty();
+        });
+        MarkDirty();
+    }
+
+    private void OnStrokeErased(object? sender, RoutedEventArgs e)
+    {
+        MarkDirty();
+        // Undo for erased strokes: complex — push a snapshot restore
+    }
+
+    private PdfTabViewModel? GetTab()
+    {
+        var view = FindAncestor<Views.PdfTabView>(this);
+        return view?.DataContext as PdfTabViewModel;
     }
 
     // ── PenTool ────────────────────────────────────────────────────────────

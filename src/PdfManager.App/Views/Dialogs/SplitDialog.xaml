@@ -1,0 +1,78 @@
+<Window x:Class="PdfManager.App.Views.Dialogs.SplitDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dividi PDF"
+        Width="520" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        FontFamily="Segoe UI"
+        Background="{DynamicResource Brush.Window}"
+        Foreground="{DynamicResource Brush.Text}">
+
+    <StackPanel Margin="20">
+        <TextBlock x:Name="InfoText" FontSize="13"
+                   Foreground="{DynamicResource Brush.TextMuted}"
+                   Margin="0,0,0,14" TextWrapping="Wrap"/>
+
+        <TabControl x:Name="Tabs" Background="Transparent">
+
+            <!-- Auto tab -->
+            <TabItem Header="Divisione automatica">
+                <StackPanel Margin="0,14,0,0">
+                    <TextBlock Text="Dividi in quanti blocchi uguali?" FontSize="13" Margin="0,0,0,8"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Slider x:Name="BlockSlider"
+                                Minimum="2" Maximum="20"
+                                Value="2"
+                                Width="260"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True"
+                                ValueChanged="BlockSlider_Changed"/>
+                        <TextBlock x:Name="BlockCountLabel"
+                                   Text="2" FontSize="16" FontWeight="SemiBold"
+                                   Margin="12,0,0,0"
+                                   Foreground="{DynamicResource Brush.Accent}"/>
+                        <TextBlock Text=" blocchi" FontSize="13" VerticalAlignment="Bottom" Margin="2,0,0,2"/>
+                    </StackPanel>
+                    <ItemsControl x:Name="AutoPreview" Margin="0,14,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" FontSize="12"
+                                           Foreground="{DynamicResource Brush.TextMuted}"
+                                           Margin="0,2"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Manual tab -->
+            <TabItem Header="Divisione personalizzata">
+                <StackPanel Margin="0,14,0,0">
+                    <TextBlock FontSize="12" TextWrapping="Wrap" Margin="0,0,0,10"
+                               Foreground="{DynamicResource Brush.TextMuted}">
+                        Definisci ogni blocco con un intervallo di pagine (es. <Bold>1-3</Bold>) o pagine singole separate da virgola (es. <Bold>1,3,5</Bold>).
+                    </TextBlock>
+                    <ScrollViewer MaxHeight="220" VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="ManualBlocksPanel"/>
+                    </ScrollViewer>
+                    <Button Content="+ Aggiungi blocco"
+                            Style="{StaticResource BigButton}"
+                            HorizontalAlignment="Left"
+                            Margin="0,8,0,0"
+                            Click="AddBlock_Click"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <!-- Actions -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Content="Annulla" Style="{StaticResource BigButton}"
+                    IsCancel="True" Margin="0,0,8,0"/>
+            <Button Content="Dividi e salva"
+                    Style="{StaticResource BigButton}"
+                    IsDefault="True"
+                    Click="DoSplit_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

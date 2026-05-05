@@ -27,6 +27,32 @@ public sealed partial class PdfTabViewModel : ObservableObject, IDropTarget
 
     private readonly Stack<Action> _undoStack = new();
     private readonly Stack<Action> _redoStack = new();
+    private bool _suppressUndoCapture;
+
+    public void PushUndo(Action undo)
+    {
+        if (_suppressUndoCapture) return;
+        _undoStack.Push(undo);
+        _redoStack.Clear();
+    }
+
+    public void Undo()
+    {
+        if (_undoStack.Count == 0) return;
+        _suppressUndoCapture = true;
+        try { _undoStack.Pop().Invoke(); }
+        finally { _suppressUndoCapture = false; }
+        IsDirty = true;
+    }
+
+    public void Redo()
+    {
+        if (_redoStack.Count == 0) return;
+        _suppressUndoCapture = true;
+        try { _redoStack.Pop().Invoke(); }
+        finally { _suppressUndoCapture = false; }
+        IsDirty = true;
+    }
 
     public PdfTabViewModel(
         string filePath,

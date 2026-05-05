@@ -5,142 +5,208 @@
         xmlns:views="clr-namespace:PdfManager.App.Views"
         Title="{DynamicResource Str_AppTitle}"
         Height="860" Width="1280"
-        MinWidth="800" MinHeight="500"
+        MinWidth="700" MinHeight="480"
         TextOptions.TextFormattingMode="Display"
+        FontFamily="Segoe UI, Inter, Arial"
+        Background="{DynamicResource Brush.Window}"
         AllowDrop="True"
         Drop="Window_Drop"
         DragOver="Window_DragOver"
         Stylus.IsPressAndHoldEnabled="False">
 
-
     <Window.InputBindings>
-        <KeyBinding Key="O" Modifiers="Ctrl"       Command="{Binding OpenCommand}"/>
-        <KeyBinding Key="S" Modifiers="Ctrl"       Command="{Binding SaveCommand}"/>
-        <KeyBinding Key="S" Modifiers="Ctrl+Shift" Command="{Binding SaveAsCommand}"/>
-        <KeyBinding Key="W" Modifiers="Ctrl"       Command="{Binding CloseTabCommand}"/>
-        <KeyBinding Key="Z" Modifiers="Ctrl"       Command="{Binding UndoCommand}"/>
-        <KeyBinding Key="Y" Modifiers="Ctrl"       Command="{Binding RedoCommand}"/>
-        <KeyBinding Key="Delete"                   Command="{Binding DeletePageCommand}"/>
-        <KeyBinding Key="R"                        Command="{Binding RotateRightCommand}"/>
-        <KeyBinding Key="P"                        Command="{Binding TogglePenCommand}"/>
-        <KeyBinding Key="E"                        Command="{Binding ToggleEraserCommand}"/>
-        <KeyBinding Key="Escape"                   Command="{Binding DeactivateToolCommand}"/>
-        <KeyBinding Key="H"                        Command="{Binding TogglePanCommand}"/>
-        <KeyBinding Key="OemPlus"  Modifiers="Ctrl" Command="{Binding ZoomInCommand}"/>
-        <KeyBinding Key="OemMinus" Modifiers="Ctrl" Command="{Binding ZoomOutCommand}"/>
-        <KeyBinding Key="D0"       Modifiers="Ctrl" Command="{Binding ZoomResetCommand}"/>
+        <KeyBinding Key="O"        Modifiers="Ctrl"       Command="{Binding OpenCommand}"/>
+        <KeyBinding Key="S"        Modifiers="Ctrl"       Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="S"        Modifiers="Ctrl+Shift" Command="{Binding SaveAsCommand}"/>
+        <KeyBinding Key="W"        Modifiers="Ctrl"       Command="{Binding CloseTabCommand}"/>
+        <KeyBinding Key="Z"        Modifiers="Ctrl"       Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Y"        Modifiers="Ctrl"       Command="{Binding RedoCommand}"/>
+        <KeyBinding Key="Delete"                          Command="{Binding DeletePageCommand}"/>
+        <KeyBinding Key="R"                               Command="{Binding RotateRightCommand}"/>
+        <KeyBinding Key="P"                               Command="{Binding TogglePenCommand}"/>
+        <KeyBinding Key="E"                               Command="{Binding ToggleEraserCommand}"/>
+        <KeyBinding Key="H"                               Command="{Binding TogglePanCommand}"/>
+        <KeyBinding Key="Escape"                          Command="{Binding DeactivateToolCommand}"/>
+        <KeyBinding Key="OemPlus"  Modifiers="Ctrl"       Command="{Binding ZoomInCommand}"/>
+        <KeyBinding Key="OemMinus" Modifiers="Ctrl"       Command="{Binding ZoomOutCommand}"/>
+        <KeyBinding Key="D0"       Modifiers="Ctrl"       Command="{Binding ZoomResetCommand}"/>
     </Window.InputBindings>
 
     <DockPanel>
-        <!-- Main Toolbar -->
+        <!-- Toolbar -->
         <Border DockPanel.Dock="Top"
-                Background="{DynamicResource Brush.Surface}"
-                BorderBrush="{DynamicResource Brush.Border}"
+                Background="{DynamicResource Brush.Toolbar}"
+                BorderBrush="{DynamicResource Brush.ToolbarBorder}"
                 BorderThickness="0,0,0,1">
-            <ToolBar Height="56" Background="Transparent" Band="0">
-                <Button Content="{DynamicResource Str_Open}"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding OpenCommand}"
-                        ToolTip="Apri PDF (Ctrl+O)"/>
-                <Button Content="{DynamicResource Str_Save}"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding SaveCommand}"
-                        ToolTip="Salva (Ctrl+S)"/>
-                <Button Content="{DynamicResource Str_SaveAs}"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding SaveAsCommand}"
-                        ToolTip="Salva con nome (Ctrl+Shift+S)"/>
+            <ToolBar Style="{StaticResource FlatToolBar}">
+
+                <!-- File -->
+                <Button Content="Apri"   Style="{StaticResource BigButton}" Command="{Binding OpenCommand}"    ToolTip="Apri (Ctrl+O)"/>
+                <Button Content="Salva"  Style="{StaticResource BigButton}" Command="{Binding SaveCommand}"   ToolTip="Salva (Ctrl+S)"/>
+                <Button Content="Salva…" Style="{StaticResource BigButton}" Command="{Binding SaveAsCommand}" ToolTip="Salva con nome (Ctrl+Shift+S)"/>
                 <Separator/>
-                <Button Content="{DynamicResource Str_Combine}"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding OpenCombineCommand}"/>
+
+                <!-- Page ops -->
+                <Button Content="Combina"  Style="{StaticResource BigButton}" Command="{Binding OpenCombineCommand}"/>
+                <Button Content="Dividi"   Style="{StaticResource BigButton}" Command="{Binding OpenSplitCommand}"/>
                 <Separator/>
-                <ToggleButton Content="{DynamicResource Str_Pen}"
-                              Style="{StaticResource BigToggleButton}"
-                              IsChecked="{Binding IsPenMode}"
-                              ToolTip="Penna (P)"/>
-                <ToggleButton Content="{DynamicResource Str_Text}"
-                              Style="{StaticResource BigToggleButton}"
-                              IsChecked="{Binding IsTextMode}"
-                              ToolTip="Testo (T)"/>
-                <ToggleButton Content="{DynamicResource Str_Eraser}"
-                              Style="{StaticResource BigToggleButton}"
-                              IsChecked="{Binding IsEraserMode}"
-                              ToolTip="Gomma (E)"/>
-                <ToggleButton Content="✋" FontSize="20"
-                              Style="{StaticResource BigToggleButton}"
-                              IsChecked="{Binding IsPanMode}"
-                              ToolTip="Mano — trascina per scorrere (H)"/>
+
+                <!-- Tools — mutually exclusive -->
+                <ToggleButton Content="Penna"  Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsPenMode}"    ToolTip="Penna (P)"/>
+
+                <!-- Pen options popup (opens when clicking arrow) -->
+                <Button x:Name="PenOptionsBtn"
+                        Content="▾" Width="18" MinWidth="18" Padding="0"
+                        Style="{StaticResource BigButton}"
+                        Visibility="{Binding IsPenMode, Converter={StaticResource BoolToVis}}"
+                        Click="PenOptionsBtn_Click"
+                        ToolTip="Opzioni penna"/>
+
+                <ToggleButton Content="Testo"  Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsTextMode}"   ToolTip="Testo"/>
+                <ToggleButton Content="Gomma"  Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsEraserMode}" ToolTip="Gomma (E)"/>
+                <ToggleButton Content="✋"     Style="{StaticResource BigToggleButton}" IsChecked="{Binding IsPanMode}"    ToolTip="Pan (H)" FontSize="14"/>
                 <Separator/>
-                <Button Content="↺" FontSize="20"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding RotateLeftCommand}"
-                        ToolTip="{DynamicResource Str_RotateLeft}"/>
-                <Button Content="↻" FontSize="20"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding RotateRightCommand}"
-                        ToolTip="{DynamicResource Str_RotateRight}"/>
-                <Button Content="🗑" FontSize="20"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding DeletePageCommand}"
-                        ToolTip="{DynamicResource Str_DeletePage}"/>
+
+                <!-- Page ops -->
+                <Button Content="↺" Style="{StaticResource BigButton}" Command="{Binding RotateLeftCommand}"  ToolTip="Ruota sx"/>
+                <Button Content="↻" Style="{StaticResource BigButton}" Command="{Binding RotateRightCommand}" ToolTip="Ruota dx (R)"/>
+                <Button Content="🗑" Style="{StaticResource BigButton}" Command="{Binding DeletePageCommand}"  ToolTip="Elimina pagina (Del)" FontSize="14"/>
                 <Separator/>
-                <Button Content="↩" FontSize="20"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding UndoCommand}"
-                        ToolTip="Annulla (Ctrl+Z)"/>
-                <Button Content="↪" FontSize="20"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding RedoCommand}"
-                        ToolTip="Ripeti (Ctrl+Y)"/>
+
+                <!-- Undo/redo -->
+                <Button Content="↩" Style="{StaticResource BigButton}" Command="{Binding UndoCommand}" ToolTip="Annulla (Ctrl+Z)"/>
+                <Button Content="↪" Style="{StaticResource BigButton}" Command="{Binding RedoCommand}" ToolTip="Ripeti (Ctrl+Y)"/>
                 <Separator/>
-                <Button Content="−" FontSize="20" Width="44"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding ZoomOutCommand}"
-                        ToolTip="Zoom indietro (Ctrl+-)"/>
-                <Button Content="{Binding ZoomLabel}" FontSize="13"
-                        MinWidth="56" Height="44"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding ZoomResetCommand}"
-                        ToolTip="Ripristina zoom 100% (Ctrl+0)"/>
-                <Button Content="+" FontSize="20" Width="44"
-                        Style="{StaticResource BigButton}"
-                        Command="{Binding ZoomInCommand}"
-                        ToolTip="Zoom avanti (Ctrl++)"/>
+
+                <!-- Zoom -->
+                <Button Content="−" Width="28" Style="{StaticResource BigButton}" Command="{Binding ZoomOutCommand}" ToolTip="Zoom out (Ctrl+-)"/>
+                <Button Content="{Binding ZoomLabel}" MinWidth="48" Style="{StaticResource BigButton}" Command="{Binding ZoomResetCommand}" ToolTip="Reset zoom (Ctrl+0)" FontSize="12"/>
+                <Button Content="+" Width="28" Style="{StaticResource BigButton}" Command="{Binding ZoomInCommand}"  ToolTip="Zoom in (Ctrl++)"/>
+
+                <!-- Push remaining items right -->
+                <Separator/>
+
+                <!-- Dark mode toggle -->
+                <ToggleButton Style="{StaticResource BigToggleButton}"
+                              IsChecked="{Binding IsDarkMode}"
+                              Command="{Binding ToggleThemeCommand}"
+                              ToolTip="Tema chiaro/scuro"
+                              FontSize="15">
+                    <ToggleButton.Content>
+                        <TextBlock Text="{Binding IsDarkMode, Converter={StaticResource MoonSunConverter}}"
+                                   FontFamily="Segoe UI Emoji"/>
+                    </ToggleButton.Content>
+                </ToggleButton>
+
             </ToolBar>
         </Border>
 
-        <!-- Tab control -->
-        <TabControl ItemsSource="{Binding OpenTabs}"
+        <!-- Pen options popup (inline, positioned below toolbar) -->
+        <Popup x:Name="PenPopup"
+               PlacementTarget="{Binding ElementName=PenOptionsBtn}"
+               Placement="Bottom"
+               StaysOpen="False"
+               AllowsTransparency="True">
+            <Border Background="{DynamicResource Brush.Surface}"
+                    BorderBrush="{DynamicResource Brush.Border}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Padding="10,8"
+                    Effect="{x:Null}">
+                <StackPanel>
+                    <!-- Color swatches -->
+                    <TextBlock Text="Colore" FontSize="11"
+                               Foreground="{DynamicResource Brush.TextMuted}"
+                               Margin="0,0,0,5"
+                               FontFamily="Segoe UI"/>
+                    <ItemsControl ItemsSource="{Binding PenTool.Palette}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel Width="160"/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Width="24" Height="24" Margin="2"
+                                        Padding="0"
+                                        Tag="{Binding}"
+                                        Click="SwatchClick"
+                                        BorderThickness="1.5"
+                                        Cursor="Hand">
+                                    <Button.Background><SolidColorBrush Color="{Binding}"/></Button.Background>
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="bd"
+                                                                Width="24" Height="24"
+                                                                CornerRadius="12"
+                                                                Background="{TemplateBinding Background}"
+                                                                BorderBrush="Transparent"
+                                                                BorderThickness="2">
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bd" Property="BorderBrush" Value="{DynamicResource Brush.Text}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Thickness -->
+                    <TextBlock Text="Spessore" FontSize="11"
+                               Foreground="{DynamicResource Brush.TextMuted}"
+                               Margin="0,8,0,4"
+                               FontFamily="Segoe UI"/>
+                    <Slider Minimum="1" Maximum="14"
+                            Value="{Binding PenTool.WidthPt}"
+                            Width="160"
+                            TickFrequency="1"
+                            IsSnapToTickEnabled="True"/>
+                    <TextBlock Text="{Binding PenTool.WidthPt, StringFormat='{}{0:0}pt'}"
+                               FontSize="11" HorizontalAlignment="Center"
+                               Foreground="{DynamicResource Brush.TextMuted}"
+                               Margin="0,2,0,0"
+                               FontFamily="Segoe UI"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!-- Tabs -->
+        <TabControl x:Name="MainTabControl"
+                    ItemsSource="{Binding OpenTabs}"
                     SelectedItem="{Binding ActiveTab}"
                     Background="{DynamicResource Brush.Background}">
 
-            <!-- Tab header: filename + close button -->
             <TabControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:PdfTabViewModel}">
-                    <StackPanel Orientation="Horizontal" Margin="0">
+                    <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Title}"
                                    VerticalAlignment="Center"
-                                   MaxWidth="180"
+                                   MaxWidth="160"
                                    TextTrimming="CharacterEllipsis"
-                                   FontSize="13"
+                                   FontSize="12"
+                                   FontFamily="Segoe UI"
                                    Margin="6,0,4,0"/>
-                        <Button Content="✕"
-                                Width="22" Height="22" FontSize="11"
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
+                        <Button Content="✕" Width="18" Height="18"
+                                FontSize="10" Padding="0"
+                                Background="Transparent" BorderThickness="0"
                                 VerticalAlignment="Center"
-                                ToolTip="Chiudi (Ctrl+W)"
                                 CommandParameter="{Binding}"
                                 Command="{Binding RelativeSource={RelativeSource AncestorType=TabControl},
                                                   Path=DataContext.CloseTabCommand}"
-                                Stylus.IsPressAndHoldEnabled="False"/>
+                                Stylus.IsPressAndHoldEnabled="False"
+                                Cursor="Hand"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
 
-            <!-- Tab content: PdfTabView with PenTool in Tag -->
             <TabControl.ContentTemplate>
                 <DataTemplate DataType="{x:Type vm:PdfTabViewModel}">
                     <views:PdfTabView Tag="{Binding RelativeSource={RelativeSource AncestorType=TabControl},
@@ -148,7 +214,6 @@
                 </DataTemplate>
             </TabControl.ContentTemplate>
 
-            <!-- Empty state overlay -->
             <TabControl.Style>
                 <Style TargetType="TabControl">
                     <Style.Triggers>
@@ -159,16 +224,20 @@
                                         <Border Background="{DynamicResource Brush.Background}">
                                             <StackPanel HorizontalAlignment="Center"
                                                         VerticalAlignment="Center">
-                                                <TextBlock Text="📄" FontSize="64"
+                                                <TextBlock Text="GP" FontSize="56"
+                                                           FontWeight="Bold"
+                                                           FontFamily="Segoe UI"
+                                                           Foreground="{DynamicResource Brush.Accent}"
                                                            HorizontalAlignment="Center"/>
                                                 <TextBlock Text="{DynamicResource Str_DropHint}"
-                                                           FontSize="18"
+                                                           FontSize="14"
+                                                           FontFamily="Segoe UI"
                                                            Foreground="{DynamicResource Brush.TextMuted}"
                                                            HorizontalAlignment="Center"
                                                            TextAlignment="Center"
                                                            TextWrapping="Wrap"
-                                                           MaxWidth="400"
-                                                           Margin="0,16,0,0"/>
+                                                           MaxWidth="360"
+                                                           Margin="0,12,0,0"/>
                                             </StackPanel>
                                         </Border>
                                     </ControlTemplate>

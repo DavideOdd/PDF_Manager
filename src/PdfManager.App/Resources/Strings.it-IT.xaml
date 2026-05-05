@@ -45,5 +45,8 @@
     <sys:String x:Key="Str_Error">Errore</sys:String>
     <sys:String x:Key="Str_NoDocumentOpen">Nessun documento aperto.</sys:String>
     <sys:String x:Key="Str_DropHint">Trascina qui PDF o immagini per aprirli o combinarli.</sys:String>
+    <sys:String x:Key="Str_Split">Dividi</sys:String>
+    <sys:String x:Key="Str_SplitAuto">Divisione automatica</sys:String>
+    <sys:String x:Key="Str_SplitManual">Divisione personalizzata</sys:String>
 
 </ResourceDictionary>

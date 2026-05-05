@@ -21,64 +21,42 @@ static byte[] MakeFrame(int s)
     g.TextRenderingHint  = TextRenderingHint.AntiAliasGridFit;
     g.Clear(Color.Transparent);
 
-    int pad  = Math.Max(1, (int)(s * 0.10));
-    int fold = Math.Max(2, (int)(s * 0.22));
-    int docW = s - pad * 2;
-    int docH = (int)(s * 0.80);
-    int docX = pad;
-    int docY = (s - docH) / 2;
+    // Rounded rectangle background — indigo #3F51B5
+    float r = s * 0.18f;
+    var bgRect = new RectangleF(0, 0, s, s);
+    using var bgBrush = new SolidBrush(Color.FromArgb(255, 63, 81, 181));
+    FillRoundedRect(g, bgBrush, bgRect, r);
 
-    Point[] bodyPts =
-    [
-        new(docX,               docY + fold),
-        new(docX,               docY + docH),
-        new(docX + docW,        docY + docH),
-        new(docX + docW,        docY + fold),
-        new(docX + docW - fold, docY),
-        new(docX,               docY)
-    ];
-
-    using var bodyBrush = new SolidBrush(Color.FromArgb(255, 63, 81, 181));
-    g.FillPolygon(bodyBrush, bodyPts);
-
-    Point[] foldPts =
-    [
-        new(docX + docW - fold, docY),
-        new(docX + docW,        docY + fold),
-        new(docX + docW - fold, docY + fold)
-    ];
-    using var foldBrush = new SolidBrush(Color.FromArgb(255, 121, 134, 203));
-    g.FillPolygon(foldBrush, foldPts);
-
+    // "GP" text — white, bold, Inter/Arial
     if (s >= 24)
     {
-        int bandH = Math.Max(4, (int)(s * 0.22));
-        int bandY = docY + (int)(docH * 0.50);
-        using var redBrush = new SolidBrush(Color.FromArgb(255, 211, 47, 47));
-        g.FillRectangle(redBrush, docX, bandY, docW, bandH);
-
-        if (s >= 32)
+        string text = s >= 32 ? "GP" : "G";
+        float fontSize = s * (s >= 32 ? 0.42f : 0.52f);
+        using var font  = new Font("Segoe UI", fontSize, FontStyle.Bold, GraphicsUnit.Pixel);
+        using var brush = new SolidBrush(Color.White);
+        var sf = new StringFormat
         {
-            float fs = Math.Max(6, bandH * 0.70f);
-            using var font  = new Font("Arial", fs, FontStyle.Bold, GraphicsUnit.Pixel);
-            using var white = new SolidBrush(Color.White);
-            var sf = new StringFormat
-            {
-                Alignment     = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-            g.DrawString("PDF", font, white,
-                new RectangleF(docX, bandY, docW, bandH), sf);
-        }
+            Alignment     = StringAlignment.Center,
+            LineAlignment = StringAlignment.Center
+        };
+        g.DrawString(text, font, brush, new RectangleF(0, 0, s, s), sf);
     }
-
-    float pw = Math.Max(0.5f, s / 64f);
-    using var pen = new Pen(Color.FromArgb(60, 255, 255, 255), pw);
-    g.DrawPolygon(pen, bodyPts);
 
     using var ms = new MemoryStream();
     bmp.Save(ms, ImageFormat.Png);
     return ms.ToArray();
+}
+
+static void FillRoundedRect(Graphics g, Brush brush, RectangleF rect, float radius)
+{
+    using var path = new GraphicsPath();
+    float d = radius * 2;
+    path.AddArc(rect.X,               rect.Y,                d, d, 180, 90);
+    path.AddArc(rect.Right - d,       rect.Y,                d, d, 270, 90);
+    path.AddArc(rect.Right - d,       rect.Bottom - d,       d, d,   0, 90);
+    path.AddArc(rect.X,               rect.Bottom - d,       d, d,  90, 90);
+    path.CloseFigure();
+    g.FillPath(brush, path);
 }
 
 static void WriteIco(string path, int[] sizes, List<byte[]> pngs)
@@ -88,17 +66,14 @@ static void WriteIco(string path, int[] sizes, List<byte[]> pngs)
     bw.Write((ushort)0);
     bw.Write((ushort)1);
     bw.Write((ushort)sizes.Length);
-
     int offset = 6 + 16 * sizes.Length;
     for (int i = 0; i < sizes.Length; i++)
     {
         int sz = sizes[i];
         bw.Write((byte)(sz >= 256 ? 0 : sz));
         bw.Write((byte)(sz >= 256 ? 0 : sz));
-        bw.Write((byte)0);
-        bw.Write((byte)0);
-        bw.Write((ushort)1);
-        bw.Write((ushort)32);
+        bw.Write((byte)0); bw.Write((byte)0);
+        bw.Write((ushort)1); bw.Write((ushort)32);
         bw.Write((uint)pngs[i].Length);
         bw.Write((uint)offset);
         offset += pngs[i].Length;

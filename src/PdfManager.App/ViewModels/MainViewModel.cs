@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PdfManager.App.Services;
 using PdfManager.Core.Services;
 
 namespace PdfManager.App.ViewModels;
@@ -21,20 +22,43 @@ public sealed partial class MainViewModel : ObservableObject
     public bool IsPenMode
     {
         get => PenTool.EditingMode == InkCanvasEditingMode.Ink;
-        set { if (value) PenTool.ActivatePen(); else if (IsPenMode) PenTool.Deactivate(); OnPropertyChanged(); OnPropertyChanged(nameof(IsTextMode)); OnPropertyChanged(nameof(IsEraserMode)); }
+        set
+        {
+            if (value) { _isTextMode = false; _isPanMode = false; PenTool.ActivatePen(); }
+            else if (IsPenMode) PenTool.Deactivate();
+            NotifyAllTools();
+        }
     }
 
     public bool IsTextMode
     {
         get => _isTextMode;
-        set { SetProperty(ref _isTextMode, value); if (!value && ActiveTab != null) { /* exit text mode */ } OnPropertyChanged(nameof(IsPenMode)); }
+        set
+        {
+            if (value) { PenTool.Deactivate(); _isPanMode = false; }
+            SetProperty(ref _isTextMode, value);
+            NotifyAllTools();
+        }
     }
     private bool _isTextMode;
 
     public bool IsEraserMode
     {
         get => PenTool.IsEraserActive;
-        set { if (value) PenTool.ActivateEraser(); else if (IsEraserMode) PenTool.Deactivate(); OnPropertyChanged(); OnPropertyChanged(nameof(IsPenMode)); }
+        set
+        {
+            if (value) { _isTextMode = false; _isPanMode = false; PenTool.ActivateEraser(); }
+            else if (IsEraserMode) PenTool.Deactivate();
+            NotifyAllTools();
+        }
+    }
+
+    private void NotifyAllTools()
+    {
+        OnPropertyChanged(nameof(IsPenMode));
+        OnPropertyChanged(nameof(IsTextMode));
+        OnPropertyChanged(nameof(IsEraserMode));
+        OnPropertyChanged(nameof(IsPanMode));
     }
 
     [ObservableProperty]
@@ -42,9 +66,8 @@ public sealed partial class MainViewModel : ObservableObject
 
     partial void OnIsPanModeChanged(bool value)
     {
-        if (value) { PenTool.Deactivate(); IsTextMode = false; }
-        OnPropertyChanged(nameof(IsPenMode));
-        OnPropertyChanged(nameof(IsEraserMode));
+        if (value) { PenTool.Deactivate(); _isTextMode = false; }
+        NotifyAllTools();
     }
 
     public MainViewModel(IPdfRenderer renderer, IPdfDocumentService docService)
@@ -165,6 +188,14 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void OpenSplit()
+    {
+        if (ActiveTab == null) return;
+        var dlg = new Views.Dialogs.SplitDialog(ActiveTab.FilePath, ActiveTab.Pages.Count);
+        dlg.ShowDialog();
+    }
+
+    [RelayCommand]
     private void RotateRight() => ActiveTab?.RotatePageRightCommand.Execute(null);
 
     [RelayCommand]
@@ -185,10 +216,10 @@ public sealed partial class MainViewModel : ObservableObject
     private void DeletePage() => ActiveTab?.DeletePageCommand.Execute(null);
 
     [RelayCommand]
-    private void Undo() { /* TODO undo stack */ }
+    private void Undo() => ActiveTab?.Undo();
 
     [RelayCommand]
-    private void Redo() { /* TODO redo stack */ }
+    private void Redo() => ActiveTab?.Redo();
 
     [RelayCommand]
     private void TogglePen() { if (PenTool.IsPenActive) PenTool.Deactivate(); else PenTool.ActivatePen(); OnPropertyChanged(nameof(IsPenMode)); OnPropertyChanged(nameof(IsEraserMode)); }
@@ -201,6 +232,15 @@ public sealed partial class MainViewModel : ObservableObject
 
     [RelayCommand]
     private void TogglePan() { IsPanMode = !IsPanMode; }
+
+    public bool IsDarkMode => ThemeService.Instance.IsDark;
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        ThemeService.Instance.Toggle();
+        OnPropertyChanged(nameof(IsDarkMode));
+    }
 
     public void HandleFileDrop(string[] paths)
     {

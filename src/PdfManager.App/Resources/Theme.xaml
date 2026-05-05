@@ -2,31 +2,31 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:conv="clr-namespace:PdfManager.App.Converters">
 
-    <!-- Converters — defined here (Application-level) so all UserControls can resolve them -->
+    <!-- Converters -->
     <conv:BooleanToVisibilityConverter x:Key="BoolToVis"/>
     <conv:BooleanToVisibilityConverter x:Key="BoolToVisInv" Invert="True"/>
+    <conv:MoonSunConverter x:Key="MoonSunConverter"/>
 
-    <SolidColorBrush x:Key="Brush.Background"      Color="#FFF7F7F8"/>
-    <SolidColorBrush x:Key="Brush.Surface"         Color="#FFFFFFFF"/>
-    <SolidColorBrush x:Key="Brush.Border"          Color="#FFD0D5DC"/>
-    <SolidColorBrush x:Key="Brush.Text"            Color="#FF1E293B"/>
-    <SolidColorBrush x:Key="Brush.TextMuted"       Color="#FF64748B"/>
-    <SolidColorBrush x:Key="Brush.Accent"          Color="#FF2563EB"/>
-    <SolidColorBrush x:Key="Brush.AccentHover"     Color="#FF1D4ED8"/>
-    <SolidColorBrush x:Key="Brush.AccentPressed"   Color="#FF1E3A8A"/>
-    <SolidColorBrush x:Key="Brush.Danger"          Color="#FFDC2626"/>
+    <!-- Typography -->
+    <FontFamily x:Key="Font.UI">Segoe UI, Inter, Arial</FontFamily>
+    <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                x:Key="Font.Size.Base">13</sys:Double>
+    <sys:Double xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                x:Key="Font.Size.Small">11</sys:Double>
 
+    <!-- Base button style: minimal, small (36px), sans-serif -->
     <Style x:Key="BigButton" TargetType="Button">
-        <Setter Property="MinHeight"  Value="44"/>
-        <Setter Property="MinWidth"   Value="44"/>
-        <Setter Property="Padding"    Value="12,8"/>
-        <Setter Property="FontSize"   Value="15"/>
-        <Setter Property="Background" Value="{StaticResource Brush.Surface}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
-        <Setter Property="Margin" Value="3,0"/>
-        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="MinHeight"        Value="32"/>
+        <Setter Property="MinWidth"         Value="32"/>
+        <Setter Property="Padding"          Value="10,5"/>
+        <Setter Property="FontSize"         Value="13"/>
+        <Setter Property="FontFamily"       Value="{StaticResource Font.UI}"/>
+        <Setter Property="Background"       Value="Transparent"/>
+        <Setter Property="BorderBrush"      Value="Transparent"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="Foreground"       Value="{DynamicResource Brush.Text}"/>
+        <Setter Property="Margin"           Value="1,0"/>
+        <Setter Property="Cursor"           Value="Hand"/>
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -35,7 +35,7 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="6"
+                            CornerRadius="5"
                             SnapsToDevicePixels="True">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
@@ -43,14 +43,15 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#FFEFF4FF"/>
-                            <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Brush.Accent}"/>
+                            <Setter TargetName="bd" Property="Background"
+                                    Value="{DynamicResource Brush.Surface2}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#FFE0EAFF"/>
+                            <Setter TargetName="bd" Property="Background"
+                                    Value="{DynamicResource Brush.AccentLight}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="0.5"/>
+                            <Setter Property="Opacity" Value="0.4"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -58,17 +59,19 @@
         </Setter>
     </Style>
 
+    <!-- Toggle button -->
     <Style x:Key="BigToggleButton" TargetType="ToggleButton">
-        <Setter Property="MinHeight"  Value="44"/>
-        <Setter Property="MinWidth"   Value="44"/>
-        <Setter Property="Padding"    Value="12,8"/>
-        <Setter Property="FontSize"   Value="15"/>
-        <Setter Property="Background" Value="{StaticResource Brush.Surface}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Brush.Border}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Foreground" Value="{StaticResource Brush.Text}"/>
-        <Setter Property="Margin" Value="3,0"/>
-        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="MinHeight"        Value="32"/>
+        <Setter Property="MinWidth"         Value="32"/>
+        <Setter Property="Padding"          Value="10,5"/>
+        <Setter Property="FontSize"         Value="13"/>
+        <Setter Property="FontFamily"       Value="{StaticResource Font.UI}"/>
+        <Setter Property="Background"       Value="Transparent"/>
+        <Setter Property="BorderBrush"      Value="Transparent"/>
+        <Setter Property="BorderThickness"  Value="1"/>
+        <Setter Property="Foreground"       Value="{DynamicResource Brush.Text}"/>
+        <Setter Property="Margin"           Value="1,0"/>
+        <Setter Property="Cursor"           Value="Hand"/>
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -77,7 +80,7 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="6"
+                            CornerRadius="5"
                             SnapsToDevicePixels="True">
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
@@ -85,17 +88,45 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="#FFEFF4FF"/>
+                            <Setter TargetName="bd" Property="Background"
+                                    Value="{DynamicResource Brush.Surface2}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="bd" Property="Background" Value="{StaticResource Brush.Accent}"/>
-                            <Setter TargetName="bd" Property="BorderBrush" Value="{StaticResource Brush.AccentHover}"/>
-                            <Setter Property="Foreground" Value="White"/>
+                            <Setter TargetName="bd" Property="Background"
+                                    Value="{DynamicResource Brush.AccentLight}"/>
+                            <Setter TargetName="bd" Property="BorderBrush"
+                                    Value="{DynamicResource Brush.Accent}"/>
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource Brush.Accent}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="0.5"/>
+                            <Setter Property="Opacity" Value="0.4"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Separator style -->
+    <Style TargetType="Separator">
+        <Setter Property="Background" Value="{DynamicResource Brush.Border}"/>
+        <Setter Property="Width"      Value="1"/>
+        <Setter Property="Margin"     Value="4,4"/>
+    </Style>
+
+    <!-- ToolBar strip style: no ugly overflow arrow, transparent bg -->
+    <Style x:Key="FlatToolBar" TargetType="ToolBar">
+        <Setter Property="Background"     Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Height"         Value="44"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolBar">
+                    <Border Background="Transparent" Padding="4,4">
+                        <StackPanel Orientation="Horizontal"
+                                    IsItemsHost="True"/>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

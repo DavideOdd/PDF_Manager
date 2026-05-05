@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using PdfManager.App.Services;
 using PdfManager.App.ViewModels;
 using PdfManager.Core.Services;
 
@@ -30,6 +31,7 @@ public partial class App : Application
     {
         base.OnStartup(e);
         Log("OnStartup BEGIN");
+        ThemeService.Instance.Apply();
 
         DispatcherUnhandledException += (_, ex) =>
         {
